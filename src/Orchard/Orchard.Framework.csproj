@@ -84,8 +84,12 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -933,7 +937,9 @@
     <Compile Include="Mvc\Routes\UrlPrefix.cs" />
     <Compile Include="Mvc\Routes\UrlPrefixAdjustedHttpContext.cs" />
     <Compile Include="Mvc\Routes\ShellRoute.cs" />
-    <Compile Include="Mvc\ViewUserControl.cs" />
+    <Compile Include="Mvc\ViewUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Mvc\Wrappers\HttpContextBaseWrapper.cs" />
     <Compile Include="Mvc\Wrappers\HttpRequestBaseWrapper.cs" />
     <Compile Include="Mvc\Wrappers\HttpResponseBaseWrapper.cs" />
@@ -1013,7 +1019,9 @@
     <Compile Include="UI\Resources\LinkEntry.cs" />
     <Compile Include="UI\Resources\ResourceFilter.cs" />
     <Compile Include="UI\Resources\ResourceManager.cs" />
-    <Compile Include="Mvc\ViewPage.cs" />
+    <Compile Include="Mvc\ViewPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Security\IAuthenticationService.cs" />
     <Compile Include="Security\Authorizer.cs" />
     <Compile Include="Security\Providers\FormsAuthenticationService.cs" />
@@ -1056,7 +1064,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
