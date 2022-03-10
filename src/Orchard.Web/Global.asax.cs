@@ -20,6 +20,7 @@ namespace Orchard.Web {
         }
 
         protected void Application_Start() {
+            MvcHandler.DisableMvcResponseHeader = true;
             RegisterRoutes(RouteTable.Routes);
             _starter = new Starter<IOrchardHost>(HostInitialization, HostBeginRequest, HostEndRequest);
             _starter.OnApplicationStart(this);
