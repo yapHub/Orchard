@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
+using Orchard.ContentManagement;
 using Orchard.ContentManagement.MetaData;
 using Orchard.Core.Common.Models;
 using Orchard.Core.Contents.Extensions;
@@ -12,9 +14,14 @@ using Orchard.Projections.Models;
 namespace Orchard.Projections {
     public class Migrations : DataMigrationImpl {
         private readonly IRepository<MemberBindingRecord> _memberBindingRepository;
+        private readonly IRepository<LayoutRecord> _layoutRepository;
 
-        public Migrations(IRepository<MemberBindingRecord> memberBindingRepository) {
+
+        public Migrations(
+            IRepository<MemberBindingRecord> memberBindingRepository,
+            IRepository<LayoutRecord> layoutRepository) {
             _memberBindingRepository = memberBindingRepository;
+            _layoutRepository = layoutRepository;
             T = NullLocalizer.Instance;
         }
 
@@ -281,6 +288,48 @@ namespace Orchard.Projections {
                 );
 
             return 4;
+        }
+        public int UpdateFrom4() {
+            SchemaBuilder.AlterTable("StringFieldIndexRecord", table => table
+            .AddColumn<string>("LatestValue", c => c.WithLength(4000)));
+
+            SchemaBuilder.AlterTable("IntegerFieldIndexRecord", table => table
+            .AddColumn<long>("LatestValue"));
+
+            SchemaBuilder.AlterTable("DoubleFieldIndexRecord", table => table
+            .AddColumn<double>("LatestValue"));
+
+            SchemaBuilder.AlterTable("DecimalFieldIndexRecord", table => table
+            .AddColumn<decimal>("LatestValue"));
+
+            //Adds indexes for better performances in queries
+            SchemaBuilder.AlterTable("StringFieldIndexRecord", table => table.CreateIndex("IX_PropertyName", new string[] { "PropertyName" }));
+            SchemaBuilder.AlterTable("StringFieldIndexRecord", table => table.CreateIndex("IX_FieldIndexPartRecord_Id", new string[] { "FieldIndexPartRecord_Id" }));
+
+            SchemaBuilder.AlterTable("IntegerFieldIndexRecord", table => table.CreateIndex("IX_PropertyName", new string[] { "PropertyName" }));
+            SchemaBuilder.AlterTable("IntegerFieldIndexRecord", table => table.CreateIndex("IX_FieldIndexPartRecord_Id", new string[] { "FieldIndexPartRecord_Id" }));
+
+            SchemaBuilder.AlterTable("DoubleFieldIndexRecord", table => table.CreateIndex("IX_PropertyName", new string[] { "PropertyName" }));
+            SchemaBuilder.AlterTable("DoubleFieldIndexRecord", table => table.CreateIndex("IX_FieldIndexPartRecord_Id", new string[] { "FieldIndexPartRecord_Id" }));
+
+            SchemaBuilder.AlterTable("DecimalFieldIndexRecord", table => table.CreateIndex("IX_PropertyName", new string[] { "PropertyName" }));
+            SchemaBuilder.AlterTable("DecimalFieldIndexRecord", table => table.CreateIndex("IX_FieldIndexPartRecord_Id", new string[] { "FieldIndexPartRecord_Id" }));
+
+            SchemaBuilder.AlterTable("QueryPartRecord", table => table
+                .AddColumn<string>("VersionScope", c => c.WithLength(15)));
+            return 5;
+        }
+
+        public int UpdateFrom5() {
+            SchemaBuilder.AlterTable("LayoutRecord", t => t.AddColumn<string>("GUIdentifier",
+                     column => column.WithLength(68)));
+
+            var layoutRecords = _layoutRepository.Table.Where(l => l.GUIdentifier == null || l.GUIdentifier == "").ToList();
+            foreach (var layout in layoutRecords) {
+               layout.GUIdentifier = Guid.NewGuid().ToString();
+            }
+
+            return 6;
         }
     }
 }

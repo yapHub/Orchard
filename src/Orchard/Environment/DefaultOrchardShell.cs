@@ -55,22 +55,12 @@ namespace Orchard.Environment {
             var appBuilder = new AppBuilder();
             appBuilder.Properties["host.AppName"] = _shellSettings.Name;
 
-            //var orderedMiddlewares = _owinMiddlewareProviders
-            //    .SelectMany(p => p.GetOwinMiddlewares())
-            //    .OrderBy(obj => obj.Priority, new FlatPositionComparer());
-
-            //foreach (var middleware in orderedMiddlewares) {
-            //    middleware.Configure(appBuilder);
-            //}
-            // https://github.com/OrchardCMS/Orchard/blob/ec0a0998daa7186e13c6db5d63c27a556647d915/src/Orchard/Environment/DefaultOrchardShell.cs
-            using (var scope = _workContextAccessor.CreateWorkContextScope())
-            {
+            using (var scope = _workContextAccessor.CreateWorkContextScope()) {
                 var orderedMiddlewares = _owinMiddlewareProviders
                     .SelectMany(p => p.GetOwinMiddlewares())
                     .OrderBy(obj => obj.Priority, new FlatPositionComparer());
 
-                foreach (var middleware in orderedMiddlewares)
-                {
+                foreach (var middleware in orderedMiddlewares) {
                     middleware.Configure(appBuilder);
                 }
             }
@@ -116,7 +106,7 @@ namespace Orchard.Environment {
                     throw;
                 }
 
-                Logger.Error(ex, "An unexpected error occured while terminating the Shell");
+                Logger.Error(ex, "An unexpected error occurred while terminating the Shell");
             }
         }
     }

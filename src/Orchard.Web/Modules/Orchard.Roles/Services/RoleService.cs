@@ -50,7 +50,7 @@ namespace Orchard.Roles.Services
         public IEnumerable<RoleRecord> GetRoles()
         {
             var roles = from role in _roleRepository.Table select role;
-            return roles.ToList();
+            return roles;
         }
 
         public RoleRecord GetRole(int id)
@@ -105,14 +105,8 @@ namespace Orchard.Roles.Services
             {
                 Logger.Error("Duplicate permissions were found!");
             }
-
             roleRecord.Name = roleName;
-
-            if (!String.Equals(currentRoleName, roleName))
-            {
-                _roleEventHandlers.Renamed(new RoleRenamedContext { Role = roleRecord, NewRoleName = roleName, PreviousRoleName = currentRoleName });
-            }
-
+            
             foreach (var rolePermission in rolePermissions)
             {
                 string permission = rolePermission;
@@ -147,6 +141,10 @@ namespace Orchard.Roles.Services
                 var permissionToRemove = roleRecord.RolesPermissions
                            .Where(x => x.Permission == permission.Permission && x.Role == roleRecord).FirstOrDefault();
                 roleRecord.RolesPermissions.Remove(permissionToRemove);
+            }
+            if (!String.Equals(currentRoleName, roleName))
+            {
+                _roleEventHandlers.Renamed(new RoleRenamedContext { Role = roleRecord, NewRoleName = roleName, PreviousRoleName = currentRoleName });
             }
 
             TriggerSignal();

@@ -36,7 +36,7 @@ namespace Orchard.Fields.Drivers {
         protected override DriverResult Editor(ContentPart part, BooleanField field, dynamic shapeHelper) {
             return ContentShape("Fields_Boolean_Edit", GetDifferentiator(field, part),
                 () => {
-                    if (part.IsNew()) {
+                    if (part.IsNew() && field.Value == null) {
                         var settings = field.PartFieldDefinition.Settings.GetModel<BooleanFieldSettings>();
                         field.Value = settings.DefaultValue;
                     }
@@ -62,13 +62,12 @@ namespace Orchard.Fields.Drivers {
         }
 
         protected override void Exporting(ContentPart part, BooleanField field, ExportContentContext context) {
-			if (field.Value.HasValue)
-				context.Element(field.FieldDefinition.Name + "." + field.Name).SetAttributeValue("Value", field.Value);
+            context.Element(field.FieldDefinition.Name + "." + field.Name).SetAttributeValue("Value", field.Value);
         }
 
         protected override void Describe(DescribeMembersContext context) {
             context
-                .Member(null, typeof(Boolean), T("Value"), T("The boolean value of the field."))
+                .Member(null, typeof(Boolean?), T("Value"), T("The boolean value of the field."))
                 .Enumerate<BooleanField>(() => field => new [] { field.Value })
                 ;
         }
